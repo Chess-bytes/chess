@@ -10,6 +10,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -61,14 +65,23 @@
             <div id="board"></div>
             
             <div class="controls">
-                <button class="btn" id="prevBtn">← Prev</button>
-                <button class="btn" id="nextBtn">Next →</button>
+                <button class="btn ctrl-btn" id="prevBtn" title="Previous Move">←</button>
+                <button class="btn ctrl-btn" id="nextBtn" title="Next Move">→</button>
+            </div>
+        </div>
+
+        <div class="details-sidebar">
+            <div class="move-log-container">
+                <h3>Live Move Log</h3>
+                <div class="move-list" id="moveList">
+                    <div class="empty-moves-notice">Select content to generate notations.</div>
+                </div>
             </div>
 
             <div class="dynamic-details">
-                <h2 id="displayTitle">Welcome to Grandmaster Chronicles</h2>
-                <div id="displayMeta" style="margin-bottom: 10px;"></div>
-                <div id="displayBody">Select a profile, iconic match, or educational article from the menu to begin exploring.</div>
+                <h2 id="displayTitle">Welcome to the Hub</h2>
+                <div id="displayMeta" style="margin-bottom: 12px;"></div>
+                <div id="displayBody">Select a profile, iconic match, or educational article from the sidebar menu to begin tracking moves.</div>
             </div>
         </div>
     </div>
