@@ -1,4 +1,3 @@
-// Database housing information and moves arrays with integrated static evaluation maps
 const database = {
     profile: {
         kasparov: {
@@ -11,7 +10,7 @@ const database = {
         fischer: {
             title: "Bobby Fischer",
             meta: "<span class='badge'>World Champion</span><span class='badge'>Born: USA</span>",
-            bio: "Bobby Fischer single-handedly broke the Soviet hegemony over the chess world during the height of the Cold War. Click through or practice against the computer below.",
+            bio: "Bobby Fischer single-handedly broke the Soviet hegemony over the chess world. Click through or practice against the computer below.",
             moves: ["e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6"],
             evals: [0.3, 0.4, 0.3, 0.4, 0.4, 0.3, 0.4, 0.3, 0.4, 0.4]
         }
@@ -43,65 +42,59 @@ const database = {
     }
 };
 
-// Application State Variables
 let board = null;
 let gameEngine = new Chess();
 let moveHistory = [];
 let staticEvals = [];
 let currentMoveIndex = -1;
-let appMode = 'review'; // Modes: 'review' or 'play'
+let appMode = 'review'; 
 
-// Synthesizer Audio Engine
+// Safely play sound (browsers block audio until the user clicks something)
 function playSound(type) {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    
-    osc.type = 'sine';
-    // Differentiate sound pitch slightly based on type
-    osc.frequency.setValueAtTime(type === 'capture' ? 240 : 180, audioCtx.currentTime);
-    
-    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-    
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.08);
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if(audioCtx.state === 'suspended') return; 
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(type === 'capture' ? 240 : 180, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+    } catch (e) {
+        console.warn("Audio not supported or blocked by browser.");
+    }
 }
 
-// Master Initialization Window Event
 document.addEventListener("DOMContentLoaded", function() {
     setupBoard('start');
     
-    // Tab Toggles
     document.getElementById('tab-profiles').addEventListener('click', () => switchTab('profiles', 'tab-profiles'));
     document.getElementById('tab-games').addEventListener('click', () => switchTab('games', 'tab-games'));
     document.getElementById('tab-articles').addEventListener('click', () => switchTab('articles', 'tab-articles'));
 
-    // Menu Item Selection
     document.querySelectorAll('.list-item').forEach(item => {
         item.addEventListener('click', function() {
             loadContent(this.getAttribute('data-type'), this.getAttribute('data-id'));
         });
     });
 
-    // Directional Control click handlers
     document.getElementById('prevBtn').addEventListener('click', () => stepMove(-1));
     document.getElementById('nextBtn').addEventListener('click', () => stepMove(1));
-    
-    // Core Mode Engine Toggle Switch configuration
     document.getElementById('modeBtn').addEventListener('click', togglePlayMode);
 });
 
-// Setup and instantiate board with appropriate permission configuration flags
 function setupBoard(position) {
     const config = {
-        draggable: appMode === 'play', // Only allow dragging in Play Mode
+        draggable: appMode === 'play',
         position: position,
         onDragStart: (src, piece) => {
             if (gameEngine.game_over()) return false;
-            // Prevent moving wrong color pieces based on active turn allocation
             if ((gameEngine.turn() === 'w' && piece.search(/^b/) !== -1) ||
                 (gameEngine.turn() === 'b' && piece.search(/^w/) !== -1)) {
                 return false;
@@ -111,13 +104,10 @@ function setupBoard(position) {
             let move = gameEngine.move({ from: src, to: target, promotion: 'q' });
             if (move === null) return 'snapback';
             
-            // Success move handling path
-            const soundType = move.captured ? 'capture' : 'move';
-            playSound(soundType);
-            updateEvaluationBar(null); // Dynamic evaluation based on engine parameters
+            playSound(move.captured ? 'capture' : 'move');
+            updateEvaluationBar(null);
             updateStatusBanner();
             
-            // Trigger automatic engine response logic shortly after
             if (!gameEngine.game_over()) {
                 window.setTimeout(makeComputerMove, 400);
             }
@@ -146,7 +136,6 @@ function loadContent(type, id) {
     staticEvals = data.evals || [];
     currentMoveIndex = -1;
 
-    // Reset back to Review Mode safely upon item content switching phase
     appMode = 'review';
     const modeBtn = document.getElementById('modeBtn');
     modeBtn.innerText = "Review Mode";
@@ -209,14 +198,11 @@ function highlightMoveNode() {
     if (active) active.classList.add('active-move');
 }
 
-// Evaluation UI Controller Matrix
 function updateEvaluationBar(customScore) {
     let score = customScore;
     
-    // If running in live play mode against engine, calculate simple piece differences dynamically
     if (score === null) {
         score = 0.0;
-        // Simple weight engine calculations logic parameters loop
         const weights = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
         gameEngine.board().forEach(row => {
             row.forEach(piece => {
@@ -233,7 +219,6 @@ function updateEvaluationBar(customScore) {
     document.getElementById('evalScore').innerText = score > 0 ? `+${score.toFixed(1)}` : score.toFixed(1);
 }
 
-// Engine Computer Move AI Logic implementation loop
 function togglePlayMode() {
     const modeBtn = document.getElementById('modeBtn');
     if (appMode === 'review') {
@@ -254,13 +239,22 @@ function togglePlayMode() {
 function makeComputerMove() {
     if (appMode !== 'play' || gameEngine.game_over()) return;
     
-    const moves = gameEngine.moves();
-    // Choose a random legal move to act as the AI response matrix engine safely
-    const randomMove = moves[Math.floor(Math.random() * moves.length)];
+    // Get all legal moves
+    const moves = gameEngine.moves({ verbose: true });
+    if (moves.length === 0) return;
+
+    // Simple AI: Capture a piece if possible, otherwise move randomly
+    let chosenMove = moves[Math.floor(Math.random() * moves.length)];
+    for (let m of moves) {
+        if (m.captured) {
+            chosenMove = m;
+            break;
+        }
+    }
     
-    gameEngine.move(randomMove);
+    gameEngine.move(chosenMove.san);
     board.position(gameEngine.fen());
-    playSound('move');
+    playSound(chosenMove.captured ? 'capture' : 'move');
     updateEvaluationBar(null);
     updateStatusBanner();
 }
