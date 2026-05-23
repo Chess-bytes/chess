@@ -62,12 +62,20 @@
         </div>
 
         <div class="main-stage">
-            <div id="board"></div>
+            <div class="board-wrapper">
+                <div class="eval-bar-container">
+                    <div id="evalBar" class="eval-bar-fill"></div>
+                    <span id="evalScore">0.0</span>
+                </div>
+                <div id="board"></div>
+            </div>
             
             <div class="controls">
                 <button class="btn ctrl-btn" id="prevBtn" title="Previous Move">←</button>
+                <button class="btn mode-toggle-btn" id="modeBtn">Review Mode</button>
                 <button class="btn ctrl-btn" id="nextBtn" title="Next Move">→</button>
             </div>
+            <div id="gameStatus" class="status-banner"></div>
         </div>
 
         <div class="details-sidebar">
