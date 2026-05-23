@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grandmaster Chronicles - The Ultimate Chess Hub</title>
+    <title>Grandmaster Chronicles - Interactive Chess Hub</title>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,30 +30,25 @@
 
             <div id="profiles" class="content-panel active">
                 <div class="list-item" data-type="profile" data-id="kasparov">
-                    <h4>Garry Kasparov</h4>
-                    <p>The Beast of Baku</p>
+                    <h4>Garry Kasparov</h4><p>The Beast of Baku</p>
                 </div>
                 <div class="list-item" data-type="profile" data-id="fischer">
-                    <h4>Bobby Fischer</h4>
-                    <p>America's Chess Icon</p>
+                    <h4>Bobby Fischer</h4><p>America's Chess Icon</p>
                 </div>
             </div>
 
             <div id="games" class="content-panel">
                 <div class="list-item" data-type="game" data-id="gotc">
-                    <h4>Game of the Century</h4>
-                    <p>Fischer vs. Byrne (1956)</p>
+                    <h4>Game of the Century</h4><p>Fischer vs. Byrne (1956)</p>
                 </div>
                 <div class="list-item" data-type="game" data-id="immortal">
-                    <h4>The Immortal Game</h4>
-                    <p>Anderssen vs. Kieseritzky (1851)</p>
+                    <h4>The Immortal Game</h4><p>Anderssen vs. Kieseritzky (1851)</p>
                 </div>
             </div>
 
             <div id="articles" class="content-panel">
                 <div class="list-item" data-type="article" data-id="positional">
-                    <h4>Mastering Space</h4>
-                    <p>Understanding positional constraints...</p>
+                    <h4>Mastering Space</h4><p>Understanding positional constraints...</p>
                 </div>
             </div>
         </div>
@@ -69,7 +61,6 @@
                 </div>
                 <div id="board"></div>
             </div>
-            
             <div class="controls">
                 <button class="btn ctrl-btn" id="prevBtn" title="Previous Move">←</button>
                 <button class="btn mode-toggle-btn" id="modeBtn">Review Mode</button>
@@ -85,7 +76,6 @@
                     <div class="empty-moves-notice">Select content to generate notations.</div>
                 </div>
             </div>
-
             <div class="dynamic-details">
                 <h2 id="displayTitle">Welcome to the Hub</h2>
                 <div id="displayMeta" style="margin-bottom: 12px;"></div>
